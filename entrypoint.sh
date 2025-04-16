@@ -1,18 +1,19 @@
 #!/bin/bash
+set -e
 
-# Attendre que la base de données soit prête
-until nc -z database 3306; do
-  echo "En attente de la base de données..."
+echo "Waiting for database to be ready..."
+while ! nc -z database 3306; do
   sleep 1
 done
 
-# Exécuter les migrations et seeds si c'est le premier démarrage
+# Vérifier si c'est le premier démarrage
 if [ ! -f /app/var/INSTALLED ]; then
+  echo "Running initial setup..."
   php artisan migrate --force
   php artisan db:seed --force
   touch /app/var/INSTALLED
   
-  # Créer l'utilisateur admin
+  echo "Creating admin user..."
   php artisan p:user:make \
     --email=lamelo2410@gmail.com \
     --username=toge \
@@ -22,5 +23,5 @@ if [ ! -f /app/var/INSTALLED ]; then
     --admin=1
 fi
 
-# Démarrer le serveur web
+echo "Starting web server..."
 exec apache2-foreground
