@@ -7,7 +7,7 @@ x-common:
     MYSQL_ROOT_PASSWORD: "root_password"
   panel:
     &panel-environment
-    APP_URL: "https://your-render-service-name.onrender.com"
+    APP_URL: "https://panel-vps-vamk.onrender.com"
     APP_TIMEZONE: "UTC"
     APP_SERVICE_AUTHOR: "noreply@example.com"
     TRUSTED_PROXIES: "*"
@@ -25,12 +25,13 @@ services:
       MYSQL_USER: "pterodactyl"
 
   panel:
-    build: . # Utilise le Dockerfile personnalisé
+    build: .
     restart: always
     ports:
       - "10000:80"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     volumes:
       - panel_var:/app/var
       - panel_nginx:/etc/nginx/http.d
@@ -41,6 +42,11 @@ services:
       APP_ENV: "production"
       DB_HOST: "database"
       DB_PORT: "3306"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   database_data:
