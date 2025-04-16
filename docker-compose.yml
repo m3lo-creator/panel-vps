@@ -7,7 +7,7 @@ x-common:
     MYSQL_ROOT_PASSWORD: "root_password"
   panel:
     &panel-environment
-    APP_URL: "https://panel-vps-vamk.onrender.com"
+    APP_URL: "https://your-render-service-name.onrender.com"
     APP_TIMEZONE: "UTC"
     APP_SERVICE_AUTHOR: "noreply@example.com"
     TRUSTED_PROXIES: "*"
