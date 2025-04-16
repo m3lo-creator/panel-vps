@@ -1,9 +1,11 @@
 FROM ghcr.io/pterodactyl/panel:latest
 
-# Copier le script avec conversion des fins de ligne
+# Installation des dépendances nécessaires
+RUN apk add --no-cache bash curl
+
+# Copie et configuration du script d'entrée
 COPY entrypoint.sh /entrypoint.sh
-RUN apk add --no-cache bash && \
-    sed -i 's/\r$//' /entrypoint.sh && \
-    chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh && \
+    sed -i 's/\r$//' /entrypoint.sh  # Conversion des fins de ligne
 
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
