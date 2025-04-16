@@ -7,7 +7,7 @@ x-common:
     MYSQL_ROOT_PASSWORD: "root_password"
   panel:
     &panel-environment
-    APP_URL: "https://your-render-service-name.onrender.com"
+    APP_URL: "https://panel-vps-vamk.onrender.com"  # Remplacez par votre URL Render
     APP_TIMEZONE: "UTC"
     APP_SERVICE_AUTHOR: "noreply@example.com"
     TRUSTED_PROXIES: "*"
@@ -28,7 +28,7 @@ services:
     build: .
     restart: always
     ports:
-      - "10000:80"
+      - "8080:80"  # Render nécessite le port 8080 ou 10000
     depends_on:
       database:
         condition: service_healthy
