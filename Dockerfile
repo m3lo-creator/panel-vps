@@ -1,7 +1,9 @@
 FROM ghcr.io/pterodactyl/panel:latest
 
-# Copier le script d'entrée modifié (sans dépendance à netcat)
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Copier le script avec conversion des fins de ligne
+COPY entrypoint.sh /entrypoint.sh
+RUN apk add --no-cache bash && \
+    sed -i 's/\r$//' /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
