@@ -1,0 +1,49 @@
+version: '3.8'
+
+x-common:
+  database:
+    &db-environment
+    MYSQL_PASSWORD: &db-password "pterodactyl_password"
+    MYSQL_ROOT_PASSWORD: "root_password"
+  panel:
+    &panel-environment
+    APP_URL: "https://your-render-service-name.onrender.com"
+    APP_TIMEZONE: "UTC"
+    APP_SERVICE_AUTHOR: "noreply@example.com"
+    TRUSTED_PROXIES: "*"
+
+services:
+  database:
+    image: mariadb:10.5
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - database_data:/var/lib/mysql
+    environment:
+      <<: *db-environment
+      MYSQL_DATABASE: "panel"
+      MYSQL_USER: "pterodactyl"
+
+  panel:
+    build: . # Utilise le Dockerfile personnalisé
+    restart: always
+    ports:
+      - "10000:80"
+    depends_on:
+      - database
+    volumes:
+      - panel_var:/app/var
+      - panel_nginx:/etc/nginx/http.d
+      - panel_logs:/app/storage/logs
+    environment:
+      <<: *panel-environment
+      DB_PASSWORD: *db-password
+      APP_ENV: "production"
+      DB_HOST: "database"
+      DB_PORT: "3306"
+
+volumes:
+  database_data:
+  panel_var:
+  panel_nginx:
+  panel_logs:
